@@ -76,7 +76,11 @@
         const password = prompt("What is the password to enter into Estef and Michael's love notes?");
         if (password !== "BIG BOOTY LATINA") {
             alert("Wrong password! You cannot enter.");
+            document.write("Access denied.");
+            window.stop();  // Stops further page loading in most browsers
+            // Just in case, clear body content
             document.body.innerHTML = "";
+            throw new Error("Stop script due to wrong password");
         }
     </script>
 
