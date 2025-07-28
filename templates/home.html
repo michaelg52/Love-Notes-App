@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Home - Our Love</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #fff0f5;
+            color: #333;
+            max-width: 700px;
+            margin: 40px auto;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #d6336c;
+            font-size: 2.8em;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            color: #a8285e;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            font-size: 1.2em;
+            color: #5a0b3d;
+        }
+
+        li {
+            background: #ffe6f0;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(214, 51, 108, 0.2);
+        }
+
+        a.notes-link {
+            display: inline-block;
+            margin-top: 25px;
+            padding: 10px 25px;
+            background-color: #d6336c;
+            color: white;
+            font-weight: bold;
+            border-radius: 30px;
+            text-decoration: none;
+            font-size: 1.2em;
+            transition: background-color 0.3s ease;
+        }
+
+        a.notes-link:hover {
+            background-color: #a8285e;
+        }
+
+        .images-container {
+            margin-top: 40px;
+        }
+
+        .images-container img {
+            width: 300px;
+            border-radius: 20px;
+            margin: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+    </style>
+</head>
+<body>
+    <h1>Hi my beautiful Estef ❤️</h1>
+
+    <h2>Our love countdowns</h2>
+    <ul>
+        {% for event, days in countdowns.items() %}
+            <li>{{ event }} — {{ days }} days away</li>
+        {% endfor %}
+    </ul>
+
+    <!-- Link to Notes page -->
+    <a href="/notes" class="notes-link">Go to Love Notes 💌</a>
+
+    <div class="images-container">
+        <h2>Some of My Favorite Moments with You 💖</h2>
+        <img src="{{ url_for('static', filename='images/date.jpg') }}" alt="Date Night" />
+        <img src="{{ url_for('static', filename='images/estef_smile.jpg') }}" alt="Estef Smiling" />
+        <img src="{{ url_for('static', filename='images/ferris_wheel1.jpg') }}" alt="Ferris Wheel" />
+        <img src="{{ url_for('static', filename='images/fish.jpg') }}" alt="Fish Photo" />
+        <img src="{{ url_for('static', filename='images/light.JPG') }}" alt="Light Moment" />
+        <img src="{{ url_for('static', filename='images/pumpkin.jpg') }}" alt="Pumpkin Fun" />
+        <img src="{{ url_for('static', filename='images/us.JPG') }}" alt="Us Together" />
+    </div>
+</body>
+</html>
