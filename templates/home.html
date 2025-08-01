@@ -1,102 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>National Girlfriend Day 💐</title>
+    <meta charset="UTF-8" />
+    <title>Home - Our Love</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #fff0f5;
+            background: #fff0f5;
+            color: #333;
+            max-width: 700px;
+            margin: 40px auto;
+            padding: 20px;
             text-align: center;
-            padding: 2em;
         }
-        .locked {
-            font-size: 1.5em;
+        h1 {
             color: #d6336c;
+            font-size: 2.8em;
+            margin-bottom: 10px;
         }
-        #note-text {
-            display: none;
-            margin-top: 1em;
-            padding: 1em;
-            background-color: #fff;
-            border-radius: 10px;
-            border: 2px solid #d6336c;
+        h2 {
+            color: #a8285e;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            font-size: 1.8em;
         }
-        button {
+        ul {
+            list-style: none;
+            padding: 0;
+            font-size: 1.2em;
+            color: #5a0b3d;
+        }
+        li {
+            background: #ffe6f0;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(214, 51, 108, 0.2);
+        }
+        a.notes-link {
+            display: inline-block;
+            margin-top: 25px;
+            padding: 10px 25px;
             background-color: #d6336c;
             color: white;
-            border: none;
-            padding: 0.7em 1.5em;
-            font-size: 1em;
-            border-radius: 8px;
-            cursor: pointer;
+            font-weight: bold;
+            border-radius: 30px;
+            text-decoration: none;
+            font-size: 1.2em;
+            transition: background-color 0.3s ease;
         }
-        button:hover {
-            background-color: #bf2a5c;
+        a.notes-link:hover {
+            background-color: #a8285e;
         }
     </style>
 </head>
 <body>
-    <h1>National Girlfriend Day 💐</h1>
+    <h1>Hi my beautiful Estef ❤️</h1>
 
-    {% if locked %}
-        <p class="locked">Locked — Come back on {{ note.unlock_time.strftime('%B %d, %Y at %I:%M %p') }}</p>
-        <p id="countdown"></p>
-    {% else %}
-        {% if password_required %}
-            <form method="POST">
-                <label for="password">Enter the password to unlock:</label><br><br>
-                <input type="password" id="password" name="password">
-                <button type="submit">Submit</button>
-            </form>
-            {% if error %}
-                <p style="color:red;">{{ error }}</p>
-            {% endif %}
-        {% else %}
-            <p class="unlocked">Unlocked — Read your note 💌</p>
-            <button id="toggle-btn" onclick="toggleNote()">Unlocked — Read your note 💌</button>
-            <div id="note-text">
-                <p>{{ note.message }}</p>
-            </div>
-        {% endif %}
-    {% endif %}
+    <h2>Our love countdowns</h2>
+    <ul>
+        {% for event, days in countdowns.items() %}
+            <li>{{ event }} — {{ days }} days away</li>
+        {% endfor %}
+    </ul>
 
-    <script>
-        function toggleNote() {
-            const noteText = document.getElementById("note-text");
-            if (noteText.style.display === "none" || noteText.style.display === "") {
-                noteText.style.display = "block";
-            } else {
-                noteText.style.display = "none";
-            }
-        }
-
-        {% if locked %}
-        // Countdown timer logic
-        const unlockDate = new Date("{{ note.unlock_time.isoformat() }}");
-        const countdownElement = document.getElementById("countdown");
-
-        function updateCountdown() {
-            const now = new Date();
-            const diff = unlockDate - now;
-
-            if (diff <= 0) {
-                countdownElement.innerHTML = "Unlocked!";
-                return;
-            }
-
-            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-            const minutes = Math.floor((diff / 1000 / 60) % 60);
-            const seconds = Math.floor((diff / 1000) % 60);
-
-            countdownElement.innerHTML = `Time left: ${days}d ${hours}h ${minutes}m ${seconds}s`;
-
-            setTimeout(updateCountdown, 1000);
-        }
-
-        updateCountdown();
-        {% endif %}
-    </script>
+    <!-- Link to Notes page -->
+    <a href="/notes" class="notes-link">Go to Love Notes 💌</a>
 </body>
 </html>
