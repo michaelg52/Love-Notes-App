@@ -72,15 +72,30 @@
     </style>
 </head>
 <body>
+    <script>
+        const password = prompt("What is the password to enter into Estef and Michael's love notes?");
+        if (password !== "BIG BOOTY LATINA") {
+            alert("Wrong password! You cannot enter.");
+            document.write("Access denied.");
+            window.stop();  // Stops further page loading in most browsers
+            document.body.innerHTML = "";
+            throw new Error("Stop script due to wrong password");
+        }
+    </script>
+
     <h1>Hi my beautiful Estef ❤️</h1>
 
     <h2>Our love countdowns</h2>
     <ul>
         {% for event, days in countdowns.items() %}
-            <li>{{ event }} — {{ days }} days away</li>
+            <li>
+                {{ event }} — 
+                <span id="countdown-{{ loop.index }}"></span>
+            </li>
         {% endfor %}
     </ul>
 
+    <!-- Link to Notes page -->
     <a href="/notes" class="notes-link">Go to Love Notes 💌</a>
 
     <div class="images-container">
@@ -93,5 +108,37 @@
         <img src="{{ url_for('static', filename='images/pumpkin.jpg') }}" alt="Pumpkin Fun" />
         <img src="{{ url_for('static', filename='images/us.JPG') }}" alt="Us Together" />
     </div>
+
+    <script>
+        {% for event, days in countdowns.items() %}
+        (function() {
+            const countdownEl = document.getElementById("countdown-{{ loop.index }}");
+            // Calculate the target date by adding days to today
+            const today = new Date();
+            const targetDate = new Date(today.getTime() + {{ days }} * 24 * 60 * 60 * 1000);
+
+            function updateCountdown() {
+                const now = new Date();
+                const distance = targetDate - now;
+
+                if (distance <= 0) {
+                    countdownEl.innerHTML = "Unlocked!";
+                    return;
+                }
+
+                const d = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const s = Math.floor((distance % (1000 * 60)) / 1000);
+
+                countdownEl.innerHTML = `${d}d ${h}h ${m}m ${s}s`;
+
+                setTimeout(updateCountdown, 1000);
+            }
+
+            updateCountdown();
+        })();
+        {% endfor %}
+    </script>
 </body>
 </html>

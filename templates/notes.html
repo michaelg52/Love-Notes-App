@@ -20,6 +20,12 @@
             margin-bottom: 10px;
         }
 
+        p.description {
+            font-size: 1.2em;
+            color: #5a0b3d;
+            margin-bottom: 30px;
+        }
+
         .note {
             background: #ffe4ec;
             border-radius: 12px;
@@ -27,59 +33,107 @@
             margin: 20px auto;
             max-width: 500px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: left;
         }
 
         .unlocked {
             color: green;
             font-weight: bold;
-            cursor: pointer;
         }
 
         .locked {
             color: #888;
-            font-weight: bold;
+            font-style: italic;
         }
 
-        #note-content {
-            margin-top: 15px;
-            display: none;
+        .countdown {
             font-size: 1.1em;
-            color: #5a0b3d;
-            white-space: pre-wrap; /* preserve line breaks */
+            margin-top: 10px;
+        }
+
+        button {
+            background-color: #d6336c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1em;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #a8285e;
+        }
+
+        .note-message {
+            display: none;
+            margin-top: 15px;
+            white-space: pre-wrap;
         }
     </style>
 </head>
 <body>
     <h1>Your Love Notes 💌</h1>
+    <p class="description">
+        Here are locked notes for some of our milestones and important dates. After the countdown, the love note I have written you will become visible for you to see.
+    </p>
 
     {% for note in notes %}
         <div class="note">
             <h2>{{ note.title }}</h2>
-
             {% if note.unlocked %}
-                <p class="unlocked" onclick="toggleNote({{ loop.index0 }})" id="toggle-{{ loop.index0 }}">
-                    Click to {{ 'hide' if loop.first else 'show' }} your note 💌
-                </p>
-                <div id="note-content-{{ loop.index0 }}">
+                <p class="unlocked">Unlocked — Read your note 💌</p>
+                <button onclick="toggleNote({{ loop.index }})" id="btn-{{ loop.index }}">Open note</button>
+                <div class="note-message" id="note-{{ loop.index }}">
                     <p>{{ note.message }}</p>
                 </div>
             {% else %}
-                <p class="locked">
-                    Locked — Unlocks on {{ note.date }}
-                </p>
+                <p class="locked">Locked — <span class="countdown" id="countdown-{{ loop.index }}"></span></p>
             {% endif %}
         </div>
     {% endfor %}
 
     <script>
         function toggleNote(index) {
-            const content = document.getElementById(`note-content-${index}`);
-            if (content.style.display === "block") {
-                content.style.display = "none";
+            const noteDiv = document.getElementById(`note-${index}`);
+            const btn = document.getElementById(`btn-${index}`);
+            if (noteDiv.style.display === "block") {
+                noteDiv.style.display = "none";
+                btn.textContent = "Open note";
             } else {
-                content.style.display = "block";
+                noteDiv.style.display = "block";
+                btn.textContent = "Close note";
             }
         }
+
+        {% for note in notes %}
+            {% if not note.unlocked %}
+                (function() {
+                    const countdownEl = document.getElementById("countdown-{{ loop.index }}");
+                    const unlockDate = new Date("{{ note.date }}T00:00:00");
+                    function updateCountdown() {
+                        const now = new Date();
+                        const diff = unlockDate - now;
+
+                        if (diff <= 0) {
+                            countdownEl.innerHTML = "Unlocked!";
+                            return;
+                        }
+
+                        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+                        const minutes = Math.floor((diff / 1000 / 60) % 60);
+                        const seconds = Math.floor((diff / 1000) % 60);
+
+                        countdownEl.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+
+                        setTimeout(updateCountdown, 1000);
+                    }
+                    updateCountdown();
+                })();
+            {% endif %}
+        {% endfor %}
     </script>
 </body>
 </html>
