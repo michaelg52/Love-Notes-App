@@ -48,31 +48,51 @@
             font-size: 1.1em;
             margin-top: 10px;
         }
+
+        .note-link {
+            display: none;
+            margin-top: 15px;
+            font-size: 1.1em;
+        }
+
+        .note-link a {
+            color: #d6336c;
+            text-decoration: none;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
     <h1>Your Love Notes 💌</h1>
     <p class="description">
-      Here are locked notes for some of our milestones and important dates. After the countdown, the love note I have written you will become visible for you to see.
+        Here are locked notes for some of our milestones and important dates. After the countdown, the love note I have written you will become visible for you to see.
     </p>
 
     {% for note in notes %}
         <div class="note">
             <h2>{{ note.title }}</h2>
+
             {% if note.unlocked %}
-                <p class="unlocked"><a href="{{ note.content }}" target="_blank">Unlocked — Read your note 💌</a></p>
+                <p class="unlocked">
+                    <a href="{{ note.content }}" target="_blank">Unlocked — Read your note 💌</a>
+                </p>
             {% else %}
                 <p class="locked">Locked — <span class="countdown" id="countdown-{{ loop.index }}"></span></p>
+                <p class="note-link" id="link-{{ loop.index }}">
+                    <a href="{{ note.content }}" target="_blank">Unlocked — Read your note 💌</a>
+                </p>
                 <script>
                     const countdownDate{{ loop.index }} = new Date("{{ note.date }}T00:00:00").getTime();
                     const countdownEl{{ loop.index }} = document.getElementById("countdown-{{ loop.index }}");
+                    const noteLinkEl{{ loop.index }} = document.getElementById("link-{{ loop.index }}");
 
                     function updateCountdown{{ loop.index }}() {
                         const now = new Date().getTime();
                         const distance = countdownDate{{ loop.index }} - now;
 
-                        if (distance < 0) {
+                        if (distance <= 0) {
                             countdownEl{{ loop.index }}.innerHTML = "Unlocked!";
+                            noteLinkEl{{ loop.index }}.style.display = "block";
                             return;
                         }
 
