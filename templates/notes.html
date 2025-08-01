@@ -20,12 +20,6 @@
             margin-bottom: 10px;
         }
 
-        p.description {
-            font-size: 1.2em;
-            color: #5a0b3d;
-            margin-bottom: 30px;
-        }
-
         .note {
             background: #ffe4ec;
             border-radius: 12px;
@@ -38,79 +32,54 @@
         .unlocked {
             color: green;
             font-weight: bold;
+            cursor: pointer;
         }
 
         .locked {
             color: #888;
-        }
-
-        .countdown {
-            font-size: 1.1em;
-            margin-top: 10px;
-        }
-
-        .note-link {
-            display: none;
-            margin-top: 15px;
-            font-size: 1.1em;
-        }
-
-        .note-link a {
-            color: #d6336c;
-            text-decoration: none;
             font-weight: bold;
+        }
+
+        #note-content {
+            margin-top: 15px;
+            display: none;
+            font-size: 1.1em;
+            color: #5a0b3d;
+            white-space: pre-wrap; /* preserve line breaks */
         }
     </style>
 </head>
 <body>
     <h1>Your Love Notes 💌</h1>
-    <p class="description">
-        Here are locked notes for some of our milestones and important dates. After the countdown, the love note I have written you will become visible for you to see.
-    </p>
 
     {% for note in notes %}
         <div class="note">
             <h2>{{ note.title }}</h2>
 
             {% if note.unlocked %}
-                <p class="unlocked">
-                    <a href="{{ note.content }}" target="_blank">Unlocked — Read your note 💌</a>
+                <p class="unlocked" onclick="toggleNote({{ loop.index0 }})" id="toggle-{{ loop.index0 }}">
+                    Click to {{ 'hide' if loop.first else 'show' }} your note 💌
                 </p>
+                <div id="note-content-{{ loop.index0 }}">
+                    <p>{{ note.message }}</p>
+                </div>
             {% else %}
-                <p class="locked">Locked — <span class="countdown" id="countdown-{{ loop.index }}"></span></p>
-                <p class="note-link" id="link-{{ loop.index }}">
-                    <a href="{{ note.content }}" target="_blank">Unlocked — Read your note 💌</a>
+                <p class="locked">
+                    Locked — Unlocks on {{ note.date }}
                 </p>
-                <script>
-                    const countdownDate{{ loop.index }} = new Date("{{ note.date }}T00:00:00").getTime();
-                    const countdownEl{{ loop.index }} = document.getElementById("countdown-{{ loop.index }}");
-                    const noteLinkEl{{ loop.index }} = document.getElementById("link-{{ loop.index }}");
-
-                    function updateCountdown{{ loop.index }}() {
-                        const now = new Date().getTime();
-                        const distance = countdownDate{{ loop.index }} - now;
-
-                        if (distance <= 0) {
-                            countdownEl{{ loop.index }}.innerHTML = "Unlocked!";
-                            noteLinkEl{{ loop.index }}.style.display = "block";
-                            return;
-                        }
-
-                        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-                        countdownEl{{ loop.index }}.innerHTML =
-                            `${days}d ${hours}h ${minutes}m ${seconds}s`;
-
-                        setTimeout(updateCountdown{{ loop.index }}, 1000);
-                    }
-
-                    updateCountdown{{ loop.index }}();
-                </script>
             {% endif %}
         </div>
     {% endfor %}
+
+    <script>
+        function toggleNote(index) {
+            const content = document.getElementById(`note-content-${index}`);
+            if (content.style.display === "block") {
+                content.style.display = "none";
+            } else {
+                content.style.display = "block";
+            }
+        }
+    </script>
 </body>
 </html>
